@@ -7,40 +7,43 @@ import android.widget.Button
 import android.widget.EditText
 
 class MainActivity : AppCompatActivity() {
-    private var num1: Double? = null
-    private var num2: Double? = null
-    private var res: Double? = null
+    private var num1: Double? = 0.0
+    private var num2: Double? = 0.0
+    private var res: Double? = 0.0
     private var sign: String?= ""
     private var newNum: String? = ""
-    private val mostrar: EditText = findViewById<EditText>(R.id.DisplayOp)
-    private val result: EditText = findViewById<EditText>(R.id.DisplayRes)
-    private val button0 : Button = findViewById<Button>(R.id.btn0)
-    private val button1 : Button = findViewById<Button>(R.id.btn1)
-    private val button2 : Button = findViewById<Button>(R.id.btn2)
-    private val button3 : Button = findViewById<Button>(R.id.btn3)
-    private val button4 : Button = findViewById<Button>(R.id.btn4)
-    private val button5 : Button = findViewById<Button>(R.id.btn5)
-    private val button6 : Button = findViewById<Button>(R.id.btn6)
-    private val button7 : Button = findViewById<Button>(R.id.btn7)
-    private val button8 : Button = findViewById<Button>(R.id.btn8)
-    private val button9 : Button = findViewById<Button>(R.id.btn9)
-    private val buttonPlus : Button = findViewById<Button>(R.id.btnPlus)
-    private val buttonMinus : Button = findViewById<Button>(R.id.btnMinus)
-    private val buttonMult : Button = findViewById<Button>(R.id.btnMult)
-    private val buttonDiv : Button = findViewById<Button>(R.id.btnDiv)
-    private val buttonDec : Button = findViewById<Button>(R.id.btnDec)
-    private val buttonNeg : Button = findViewById<Button>(R.id.btnNeg)
-    private val buttonRes : Button = findViewById<Button>(R.id.btnRes)
-    private val buttonCLR : Button = findViewById<Button>(R.id.btnCLR)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
+        val mostrar: EditText = findViewById<EditText>(R.id.DisplayOp)
+        val result: EditText = findViewById<EditText>(R.id.DisplayRes)
+        val button0 : Button = findViewById<Button>(R.id.btn0)
+        val button1 : Button = findViewById<Button>(R.id.btn1)
+        val button2 : Button = findViewById<Button>(R.id.btn2)
+        val button3 : Button = findViewById<Button>(R.id.btn3)
+        val button4 : Button = findViewById<Button>(R.id.btn4)
+        val button5 : Button = findViewById<Button>(R.id.btn5)
+        val button6 : Button = findViewById<Button>(R.id.btn6)
+        val button7 : Button = findViewById<Button>(R.id.btn7)
+        val button8 : Button = findViewById<Button>(R.id.btn8)
+        val button9 : Button = findViewById<Button>(R.id.btn9)
+        val buttonPlus : Button = findViewById<Button>(R.id.btnPlus)
+        val buttonMinus : Button = findViewById<Button>(R.id.btnMinus)
+        val buttonMult : Button = findViewById<Button>(R.id.btnMult)
+        val buttonDiv : Button = findViewById<Button>(R.id.btnDiv)
+        val buttonDec : Button = findViewById<Button>(R.id.btnDec)
+        val buttonNeg : Button = findViewById<Button>(R.id.btnNeg)
+        val buttonRes : Button = findViewById<Button>(R.id.btnRes)
+        val buttonCLR : Button = findViewById<Button>(R.id.btnCLR)
+
         val valor = View.OnClickListener { v -> val btnVal = v as Button
             newNum.plus(btnVal.toString())
+            AssignNum(mostrar)
         }
-
 
         button0.setOnClickListener(valor)
         button1.setOnClickListener(valor)
@@ -54,9 +57,10 @@ class MainActivity : AppCompatActivity() {
         button9.setOnClickListener(valor)
         buttonDec.setOnClickListener(valor)
 
+
         val operacion = View.OnClickListener { v ->
             val btnOp = (v as Button).text.toString()
-            Operacion(btnOp)
+            Operacion(btnOp, mostrar, result)
         }
 
         buttonPlus.setOnClickListener(operacion)
@@ -68,61 +72,66 @@ class MainActivity : AppCompatActivity() {
 
         buttonCLR.setOnClickListener { _ ->
             res = 0.0
-            num1 = null
-            num2 = null
-            if(num1 == null || num2 == null)
-            {
-                mostrar.setText("")
-            }
-            if(res == 0.0)
-            {
-                result.setText("")
-            }
+            num1 = 0.0
+            num2 = 0.0
+            mostrar.setText("")
+            result.setText("")
         }
         buttonNeg.setOnClickListener {
             val negative = -1 * newNum!!.toInt()
-            newNum = negative.toString()
+            newNum.plus(negative.toString())
         }
     }
 
-    private fun Operacion(Op: String ){
-        if(num1 == null)
-        {
+    private fun AssignNum(mostrar: EditText)
+    {
+        if(num1 == 0.0) {
             num1 = newNum?.toDouble()
+            mostrar.append(num1.toString())
         }
-        else if(num2 == null)
+        else if(num2 == 0.0)
         {
             num2 = newNum?.toDouble()
+            if(sign != "=")
+            {
+                mostrar.append(num2.toString())
+            }
         }
         newNum = ""
-        mostrar.append(num1.toString())
+    }
+
+    private fun Operacion(Op: String, mostrar: EditText, result: EditText ){
         when(Op){
             "+" -> {
-                res = num1!! + num2!!
                 sign = "+"
                 mostrar.append(sign)
             }
             "-" ->
             {
-                res = num1!! - num2!!
                 sign = "-"
                 mostrar.append(sign)
             }
             "*" -> {
-                res = num1!! * num2!!
                 sign = "*"
                 mostrar.append(sign)
             }
-            "/" -> if (num2 == 0.0){
-                result.setText("ERROR")
-            }
-            else{
-                res = num1!! / num2!!
+            "/" -> {
                 sign = "/"
                 mostrar.append(sign)
             }
             "=" -> {
-                mostrar.append(num2.toString())
+                when(sign){
+                    "+" -> {res = num1!! + num2!!}
+                    "-" -> {res = num1!! - num2!!}
+                    "*" -> {res = num1!! * num2!!}
+                    "/" -> {if (num2 == 0.0){
+                        result.setText("ERROR")
+                    }
+                    else
+                    {
+                        res = num1!! / num2!!
+                    }}
+                }
                 result.append(res.toString())
                 num1 = res
             }
@@ -160,5 +169,4 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
     }
-
 }
