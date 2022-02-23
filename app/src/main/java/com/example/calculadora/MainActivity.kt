@@ -47,9 +47,7 @@ class MainActivity : AppCompatActivity() {
             newNum = btnTxt
             //newNum.plus(btnTxt);
             //Se intento usar numeros con dos digitos pero el comando "plus" para concatenar los string no funciono
-            //Se tiene un bug se repite el segundo digito del numero 1 como el primer digito del numero 2
             AssignNum(mostrar)
-            newNum = ""
         }
 
         button0.setOnClickListener(valor)
@@ -97,18 +95,12 @@ class MainActivity : AppCompatActivity() {
     {
         if(sign == "") {
             num1 += newNum
-            newNum = ""
-            mostrar.append(num1)
-            //Bug visual en donde se muestra repetido el primer digito de numeros con mas de un digito
-            //No afecta al resultado y se podria eliminar con un posible uso de "mostrar.drop" y un for de i a mostrar.lenght()-1
+            mostrar.append(newNum)
         }
         else if(sign != "")
         {
             num2 += newNum
-            num2?.drop(0)
-            newNum=""
-            mostrar.append(num2)
-            //Mismo caso que en el if superior
+            mostrar.append(newNum)
         }
     }
 
