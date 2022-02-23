@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         result.setText("")
         val valor = View.OnClickListener { v ->
             val btnTxt = (v as Button).text.toString()
-            newNum = newNum + btnTxt
+            newNum = btnTxt
             //newNum.plus(btnTxt);
             //Se intento usar numeros con dos digitos pero el comando "plus" para concatenar los string no funciono
             //Se tiene un bug se repite el segundo digito del numero 1 como el primer digito del numero 2
@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
             result.setText("")
         }
         buttonNeg.setOnClickListener {
-            val negative = -1 * newNum.toInt()
+            val negative = -1 * newNum.toDouble()
             //newNum.plus(negative.toString())
             //Nuevamente se intento usar el comando plus pero no funciono
             newNum = negative.toString()
@@ -95,19 +95,20 @@ class MainActivity : AppCompatActivity() {
 
     private fun AssignNum(mostrar: EditText)
     {
-        if(num1 == "") {
-            num1 = num1 + newNum
+        if(sign == "") {
+            num1 += newNum
             newNum = ""
             mostrar.append(num1)
+            //Bug visual en donde se muestra repetido el primer digito de numeros con mas de un digito
+            //No afecta al resultado y se podria eliminar con un posible uso de "mostrar.drop" y un for de i a mostrar.lenght()-1
         }
-        else if(num2 == ""||sign != "")
+        else if(sign != "")
         {
-            num2 = num2 + newNum
+            num2 += newNum
+            num2?.drop(0)
             newNum=""
-            if(sign != "=")
-            {
-                mostrar.append(num2)
-            }
+            mostrar.append(num2)
+            //Mismo caso que en el if superior
         }
     }
 
@@ -132,18 +133,27 @@ class MainActivity : AppCompatActivity() {
             }
             "=" -> {
                 when(sign){
-                    "+" -> {res = num1!!.toDouble() + num2!!.toDouble()}
-                    "-" -> {res = num1!!.toDouble() - num2!!.toDouble()}
-                    "*" -> {res = num1!!.toDouble() * num2!!.toDouble()}
+                    "+" -> {
+                        res = num1!!.toDouble() + num2!!.toDouble()
+                        result.append(res.toString())
+                    }
+                    "-" -> {
+                        res = num1!!.toDouble() - num2!!.toDouble()
+                        result.append(res.toString())
+                    }
+                    "*" -> {
+                        res = num1!!.toDouble() * num2!!.toDouble()
+                        result.append(res.toString())
+                    }
                     "/" -> {if (num2!!.toDouble() == 0.0){
                         result.setText("ERROR")
                     }
                     else
                     {
                         res = num1!!.toDouble() / num2!!.toDouble()
+                        result.append(res.toString())
                     }}
                 }
-                result.append(res.toString())
             }
         }
     }
