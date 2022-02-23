@@ -7,11 +7,11 @@ import android.widget.Button
 import android.widget.EditText
 
 class MainActivity : AppCompatActivity() {
-    private var num1: Double? = 0.0
-    private var num2: Double? = 0.0
+    private var num1: String? = ""
+    private var num2: String? = ""
     private var res: Double? = 0.0
     private var sign: String?= ""
-    private var newNum: String? = ""
+    private var newNum = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,12 +40,16 @@ class MainActivity : AppCompatActivity() {
         val buttonRes : Button = findViewById<Button>(R.id.btnRes)
         val buttonCLR : Button = findViewById<Button>(R.id.btnCLR)
 
+        mostrar.setText("")
+        result.setText("")
         val valor = View.OnClickListener { v ->
             val btnTxt = (v as Button).text.toString()
-            newNum = btnTxt
+            newNum = newNum + btnTxt
             //newNum.plus(btnTxt);
             //Se intento usar numeros con dos digitos pero el comando "plus" para concatenar los string no funciono
+            //Se tiene un bug se repite el segundo digito del numero 1 como el primer digito del numero 2
             AssignNum(mostrar)
+            newNum = ""
         }
 
         button0.setOnClickListener(valor)
@@ -59,7 +63,7 @@ class MainActivity : AppCompatActivity() {
         button8.setOnClickListener(valor)
         button9.setOnClickListener(valor)
         buttonDec.setOnClickListener(valor)
-        //Se necesita corregir el decimal
+        //Se tiene un bug en donde no se agregan los numeros despues de un decimal
 
 
         val operacion = View.OnClickListener { v ->
@@ -76,34 +80,35 @@ class MainActivity : AppCompatActivity() {
 
         buttonCLR.setOnClickListener { _ ->
             res = 0.0
-            num1 = 0.0
-            num2 = 0.0
+            num1 = ""
+            num2 = ""
             mostrar.setText("")
             result.setText("")
         }
         buttonNeg.setOnClickListener {
-            val negative = -1 * newNum!!.toInt()
+            val negative = -1 * newNum.toInt()
             //newNum.plus(negative.toString())
             //Nuevamente se intento usar el comando plus pero no funciono
             newNum = negative.toString()
-        }//Se necesita corregir el negativo
+        }//Se deberia corregir o eliminar el negativo
     }
 
     private fun AssignNum(mostrar: EditText)
     {
-        if(num1 == 0.0) {
-            num1 = newNum!!.toDouble()
-            mostrar.append(num1.toString())
+        if(num1 == "") {
+            num1 = num1 + newNum
+            newNum = ""
+            mostrar.append(num1)
         }
-        else if(num2 == 0.0)
+        else if(num2 == ""||sign != "")
         {
-            num2 = newNum!!.toDouble()
+            num2 = num2 + newNum
+            newNum=""
             if(sign != "=")
             {
-                mostrar.append(num2.toString())
+                mostrar.append(num2)
             }
         }
-        newNum = ""
     }
 
     private fun Operacion(Op: String, mostrar: EditText, result: EditText ){
@@ -127,19 +132,18 @@ class MainActivity : AppCompatActivity() {
             }
             "=" -> {
                 when(sign){
-                    "+" -> {res = num1!! + num2!!}
-                    "-" -> {res = num1!! - num2!!}
-                    "*" -> {res = num1!! * num2!!}
-                    "/" -> {if (num2 == 0.0){
+                    "+" -> {res = num1!!.toDouble() + num2!!.toDouble()}
+                    "-" -> {res = num1!!.toDouble() - num2!!.toDouble()}
+                    "*" -> {res = num1!!.toDouble() * num2!!.toDouble()}
+                    "/" -> {if (num2!!.toDouble() == 0.0){
                         result.setText("ERROR")
                     }
                     else
                     {
-                        res = num1!! / num2!!
+                        res = num1!!.toDouble() / num2!!.toDouble()
                     }}
                 }
                 result.append(res.toString())
-                num1 = res
             }
         }
     }
