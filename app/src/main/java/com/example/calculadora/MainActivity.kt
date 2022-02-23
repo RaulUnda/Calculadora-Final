@@ -80,6 +80,7 @@ class MainActivity : AppCompatActivity() {
             res = 0.0
             num1 = ""
             num2 = ""
+            sign = ""
             mostrar.setText("")
             result.setText("")
         }
